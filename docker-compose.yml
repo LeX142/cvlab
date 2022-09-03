@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  redis:
+    container_name: cvlab-redis
+    image: redis:latest
+    expose:
+      - 6379
+  nginx:
+    container_name: cvlab-nginx
+    build:
+      context: .
+      dockerfile: ./docker/develop/nginx/Dockerfile
+    volumes:
+      - ./docker/develop/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "${WEB_SERVER_FORWARD_PORT:-9081}:80"
+  php:
+    container_name: cvlab-php
+    build:
+      context: ./docker/develop/php/
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app:delegated
+#      - ./docker/develop/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+#      - ./docker/develop/php/override.ini:/usr/local/etc/php/conf.d/override.ini
+      - ./docker/develop/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+    expose:
+      - 9000
