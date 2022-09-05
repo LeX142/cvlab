@@ -21,7 +21,7 @@ class RecognitionService
                 'screenshot'=>self::$url.'/frame/'.$video_id.'/'.$offset,
                 'products'=>$data
             ];
-            Cache::remember($cacheKey, 300, fn() => $data);
+            Cache::remember($cacheKey, now()->addMinutes(30), fn() => $data);
         }
         return $data;
     }
